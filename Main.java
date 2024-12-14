@@ -2,55 +2,60 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Queue;
 
 public class Main 
-{	
-     public static void main(String[] args) 
+{  
+
+   @SuppressWarnings("unchecked")
+   public static void main(String[] args) 
      {
-	Queue<E> q = null;
-	try{
-		q = parseToQueue("customers.dat");
-	}catch(IOException e)
-	{
-		System.out.println("Error finding or reading file.");
-		System.exit(-1);
-	}
+   Queue<CustomerRecord> q = null;
+   try{
+      q = parseToQueue("customers.dat");
+   }catch(IOException e)
+   {
+      System.out.println("Error finding or reading file.");
+      System.exit(-1);
+   }
 
-	int totalWaitTime = 0;
-	int nextAvailTimeA= 0;
-	int nextAvailTimeB= 0;
-		
-	//dequeue each customer and calculate his wait-time.
-	while (!(q.isEmpty()))
-	{
-	     //Get next customer's data from the queue
-        
-	     //Choose the representative with the closest nextAvailTime
-	     int waitTime = 0;
-             //decide which rep to use
-	     if(nextAvailTimeA <= nextAvailTimeB) 
-	     {
-		//calculate wait time for this customer
-		//calculate the nextAvailTimeB
-                //keep in mind that in some cases, the customer may arrive AFTER the nextAvailTime
-
-	     }
-	     else // if nextAvailTimeB < nextAvailTimeA
-             {
-		//calculate wait time for this customer
-		//calculate the nextAvailTimeA
-                //keep in mind that in some cases, the customer may arrive AFTER the nextAvailTime
-             }
-
-             totalWaitTime += waitTime;
+   int totalWaitTime = 0;
+   int nextAvailTimeA= 0;
+   int nextAvailTimeB= 0;
+      
+   //dequeue each customer and calculate his wait-time.
+   //while there are still customers in the queue
+   while (q.size()!=0){
+        CustomerRecord p1 = q.dequeue();
+   
+        //Choose the representative with the closest nextAvailTime
+        int waitTime = 0;
+        int arrivalTime = p1.getArrivalTime();
+        int helpTime = p1.getHelpTime();
+        if(nextAvailTimeA <= nextAvailTimeB) 
+        {
+            if (arrivalTime > nextAvailTimeA){
+               nextAvailTimeA = arrivalTime;
+            }
+            waitTime = nextAvailTimeA - arrivalTime;
+            nextAvailTimeA+=helpTime;
+        } 
+        else {
+            if (arrivalTime > nextAvailTimeB)
+            {
+               nextAvailTimeB = arrivalTime;
+            }
+            waitTime = nextAvailTimeB - arrivalTime;
+            nextAvailTimeB += helpTime;
          }
-         System.out.println(totalWaitTime);
+         totalWaitTime += Math.max(0,waitTime);
      }
+     System.out.println(totalWaitTime);
+   }
  
-     public static Queue parseToQueue(String fileName) throws NumberFormatException, IOException 
+     @SuppressWarnings({ "unchecked", "rawtypes" })
+   public static Queue parseToQueue(String fileName) throws NumberFormatException, IOException 
      {
-        Queue queue = new LinkedListQueue<CustomerRecord>(); //change to your Queue
+        Queue queue = new LinkedListQueue<CustomerRecord>(); 
         File file = new File(fileName); 
         BufferedReader br = new BufferedReader(new FileReader(file)); 
         String line; 
