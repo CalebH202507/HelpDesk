@@ -1,3 +1,4 @@
+
 public interface Queue<E>
 {
     //"front" and "back" should be chosen so that each is the most efficient location to perform

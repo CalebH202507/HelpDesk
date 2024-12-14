@@ -1,3 +1,5 @@
+
+
 public class CustomerRecord {
     private int arrivalTime, helpTime;
 
